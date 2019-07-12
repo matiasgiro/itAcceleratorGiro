@@ -19,6 +19,7 @@ public class ItemServiceMapImpl implements ItemService {
 
     public ItemServiceMapImpl() {
         itemMap = new HashMap<String, Item>();
+
     }
 
     @Override
@@ -29,7 +30,6 @@ public class ItemServiceMapImpl implements ItemService {
 
     @Override
     public Collection<String> getAllItems(Item[] items) {
-        itemMap.clear();
         Arrays.stream(items).forEach(this::addItem);
 
         List<String> b = itemMap.values().stream().map(Item::getTitle).collect(toList());
@@ -81,4 +81,9 @@ public class ItemServiceMapImpl implements ItemService {
 
 
         return d;    }
+
+    @Override
+    public Item getItem(String  id) {
+        return itemMap.values().stream().filter(x -> x.getId().contains(id)).findFirst().get();
+    }
 }

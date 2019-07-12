@@ -6,6 +6,7 @@ import Interfaces.ItemService;
 import Modelos.Item;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.FileNotFoundException;
@@ -29,20 +30,34 @@ public class ItemServiceFileImpl implements ItemService {
 
     @Override
     public void addItem(Item item) {
-
+        Gson gson = new Gson();
+        List<Item> res = readFile();
+        res.add(item);
+        try (FileWriter writer = new FileWriter("qweee", false)){
+            gson.toJson(res, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     public Collection<String> getAllItems(Item[] items) {
 
-        Gson gson = new Gson();
-        try (FileWriter writer = new FileWriter("itAcceleratorF", false)){
-            gson.toJson(items, writer);
-        } catch (IOException e) {
-            e.printStackTrace();
+        List<String> a = null;
+        List<Item> res = readFile();
+        if(res == null){
+            Gson gson = new Gson();
+            try (FileWriter writer = new FileWriter("qweee", false)){
+                gson.toJson(items, writer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+             a =Arrays.asList(items).stream().map(Item::getTitle).collect(toList());
+        }else{
+            a = res.stream().map(Item::getTitle).collect(toList());
         }
-        List<String> a = Arrays.asList(items).stream().map(Item::getTitle).collect(toList());
+
 
         return a;
     }
@@ -98,16 +113,23 @@ public class ItemServiceFileImpl implements ItemService {
         return d;
     }
 
+    @Override
+    public Item getItem(String id) {
+        return null;
+    }
+
     public List<Item> readFile(){
         List<Item> a = null;
         Gson gson = new Gson();
 
-        try (FileReader reader = new FileReader("itAcceleratorF")){
+        try (FileReader reader = new FileReader("qweee")){
             Type type = new TypeToken<ArrayList<Item>>() {}.getType();
             a= gson.fromJson(reader, type);
 
 
-        } catch (Exception e) {
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JsonSyntaxException | IOException e) {
             e.printStackTrace();
         }
         return a;

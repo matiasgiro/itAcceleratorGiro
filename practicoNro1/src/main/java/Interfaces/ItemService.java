@@ -10,6 +10,8 @@ public interface ItemService {
     public Collection<Item> orderItems(String atributo, String valor);
     public Collection<Item> filterItems(Double desde, Double hasta);
     public Collection<Item> conteinsItem();
+    public Item getItem(String id);
+
 
 
 }

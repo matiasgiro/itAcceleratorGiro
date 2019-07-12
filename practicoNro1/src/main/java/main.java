@@ -50,8 +50,23 @@ public class main {
             response.type("application/json");
             String search = request.params(":search");
             Item items[] = RecursoApiMeli.get_items(search);
-            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(itemService.getAllItems(items))));
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(itemServiceFile.getAllItems(items))));
         });
+
+        post("/add_item", (request, response) -> {
+            response.type("application/json");
+            Item item =  new Gson().fromJson(request.body(),Item.class);
+            itemServiceFile.addItem(item);
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
+        });
+
+        get("/get_item/:id", (request, response) -> {
+            response.type("application/json");
+            String item = request.params(":id");
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, new Gson().toJsonTree(itemService.getItem(item))));
+        });
+
+
     }
 
 
