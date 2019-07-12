@@ -33,7 +33,7 @@ public class ItemServiceFileImpl implements ItemService {
         Gson gson = new Gson();
         List<Item> res = readFile();
         res.add(item);
-        try (FileWriter writer = new FileWriter("qweee", false)){
+        try (FileWriter writer = new FileWriter("archivoItems", false)){
             gson.toJson(res, writer);
         } catch (IOException e) {
             e.printStackTrace();
@@ -48,7 +48,7 @@ public class ItemServiceFileImpl implements ItemService {
         List<Item> res = readFile();
         if(res == null){
             Gson gson = new Gson();
-            try (FileWriter writer = new FileWriter("qweee", false)){
+            try (FileWriter writer = new FileWriter("archivoItems", false)){
                 gson.toJson(items, writer);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -115,14 +115,15 @@ public class ItemServiceFileImpl implements ItemService {
 
     @Override
     public Item getItem(String id) {
-        return null;
+        List<Item> res = readFile();
+        return res.stream().filter(x -> x.getId().contains(id)).findFirst().get();
     }
 
     public List<Item> readFile(){
         List<Item> a = null;
         Gson gson = new Gson();
 
-        try (FileReader reader = new FileReader("qweee")){
+        try (FileReader reader = new FileReader("archivoItems")){
             Type type = new TypeToken<ArrayList<Item>>() {}.getType();
             a= gson.fromJson(reader, type);
 
