@@ -12,23 +12,18 @@ import (
 const (
 	userID = "userID"
 )
+var errG bool = false;
 func GetResult(c *gin.Context){
 	var wg sync.WaitGroup
 	userID := c.Param(userID)
 	channel := make(chan *domains.Result)
 	channelError := make(chan *apierrors.ApiError)
 
-	var site domains.Site
-	var country domains.Country
-
-	defer close(channel)
-	defer close(channelError)
-
-	go channelFunc(channel, &site, &country, &wg)
-	go channelErrorFunc (channelError, channel)
+	var site domains.Site = domains.Site{}
+	var country domains.Country = domains.Country{}
 
 
-
+	var errorConsulta apierrors.ApiError
 
 	id, err := strconv.ParseInt(userID,10,64)
 	if err != nil {
@@ -50,6 +45,10 @@ func GetResult(c *gin.Context){
 	}
 
 
+	go channelFunc(channel, &site, &country, &wg)
+	go channelErrorFunc (channelError, channel, c,&errorConsulta)
+
+
 	wg.Add(1)
 	go services.GetCountry(resultUser.CountryID, channel,channelError)
 
@@ -60,30 +59,36 @@ func GetResult(c *gin.Context){
 
 
 	wg.Wait()
-	c.JSON(http.StatusOK,services.GetResult(resultUser,&country,&site))
+	if errG{
+
+	}else{
+		c.JSON(http.StatusOK,services.GetResult(resultUser,&country,&site))
+	}
 }
 func channelFunc(channel chan *domains.Result, site *domains.Site, country *domains.Country, wg *sync.WaitGroup) {
 	for i :=0; i<2; i++  {
-		var p  = <- channel
+		p  := <- channel
+
 		if p != nil{
 			if p.Site != nil{
-				site = p.Site
+				*site = *p.Site
 			}
 			if p.Country != nil{
-				country = p.Country
+				*country = *p.Country
 			}
-
-			wg.Done()
 		}
+		wg.Done()
 	}
 }
-func channelErrorFunc(channelError chan *apierrors.ApiError, channel chan *domains.Result) {
+func channelErrorFunc(channelError chan *apierrors.ApiError, channel chan *domains.Result, c *gin.Context, err *apierrors.ApiError) {
+
 	for i :=0; i<2; i++  {
 		i := <- channelError
-		if i != nil{
-			close(channel)
-			<- channel
-
+		if i != nil {
+			errG = true;
+			err = i;
+			c.JSON(i.Status,i)
+			return
 		}
 	}
 }
