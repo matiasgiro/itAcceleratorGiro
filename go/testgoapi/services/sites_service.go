@@ -27,6 +27,7 @@ func GetSite(siteID string, ch chan *domains.Result, chError chan *apierrors.Api
 	}
 	result := domains.Result{}
 	if err := site.Get(); err != nil{
+		ch <- nil
 		chError <- err
 	}
 	result.Site = site
