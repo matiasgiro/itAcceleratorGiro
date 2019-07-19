@@ -21,9 +21,9 @@ func GetCountry(userID string, ch chan *domains.Result, chError chan *apierrors.
 	result := domains.Result{}
 
 	if err := country.Get(); err != nil{
+		ch <- &result
 		chError <- err
 	}
-
 	result.Country = country
 	ch <- &result
 }
