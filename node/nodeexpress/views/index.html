@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <meta charset="UTF-8">
+    <title>Buscador de agencias</title>
+</head>
+<body onload="cargarSites()">
+<script src="/services/index.js"></script>
+<h2 class="title">Buscador de agencias</h2>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="sitesSelect">Seleccionar Sitio</label>
+            <select class="form-control" id="sitesSelect" onchange="cargarPaymentMethods('');"></select>
+        </div>
+        <div class="form-group">
+            <label for="paymentSelect">Seleccionar Payment Method</label>
+            <select class="form-control" id="paymentSelect"></select>
+        </div>
+        <div class="form-group">
+            <label for="latitud">Latitud</label>
+            <input type="text" class="form-control" id="latitud" rows="3">
+        </div>
+        <div class="form-group">
+            <label for="longitud">Longitud</label>
+            <input type="text" class="form-control" id="longitud" rows="3">
+        </div>
+        <div class="form-group">
+            <label for="radio">Radio</label>
+            <input type="number" class="form-control" id="radio" rows="3">
+        </div>
+        <div class="form-group">
+            <label for="filtro">Seleccione ordenamiento</label>
+            <select class="form-control" id="filtro">
+                <option value="address_line">Direccion</option>
+                <option value="agency_code">Codigo Agencia</option>
+                <option value="distance">Distancia</option>
+            </select>
+        </div>
+
+    </form>
+    <div class="pull-right">
+        <button type="" class="btn btn-primary pull-right" onclick="cargarAgencias()">Cargar</button>
+
+
+    </div>
+    <br>
+    <div class="table margin-top">
+        <br>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Direccion</th>
+                <th scope="col">Codigo agencia</th>
+                <th scope="col">Descripcion</th>
+                <th scope="col">Longitud</th>
+                <th scope="col">Calificar</th>
+            </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
