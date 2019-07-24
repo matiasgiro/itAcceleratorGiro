@@ -86,10 +86,31 @@ function cargarPaymentMethods(psite){
 function cargarAgencias(){
 
     var site = document.getElementById("sitesSelect").value;
+
+    if(site == ""){
+        alert("Debe ingresar un sitio");
+        return
+    }
     var agency = document.getElementById("paymentSelect").value;
+    if(agency == ""){
+        alert("Debe ingresar una agencia");
+        return
+    }
     var latitud = document.getElementById("latitud").value;
+    if(latitud == ""){
+        alert("Debe ingresar una latitud");
+        return
+    }
     var longitud = document.getElementById("longitud").value;
+    if(longitud == ""){
+        alert("Debe ingresar una longitud");
+        return
+    }
     var radio = document.getElementById("radio").value;
+    if(radio == ""){
+        alert("Debe ingresar un radio");
+        return
+    }
 
     var tbody = document.getElementById("tbody");
     tbody.innerHTML = '';
@@ -171,10 +192,10 @@ function cargarAgencias(){
                 inegative.className += 'fa fa-thumbs-o-down';
 
                 buttonsPositive.onclick = function(e) {
-                   calificar(agency)
+                   addFavorite(agency)
                 };
                 buttonsNegative.onclick = function(e) {
-                    calificar(agency)
+                    removeFavorite(agency)
                 };
 
                 var txtaddress = document.createTextNode(agency.address.address_line);
@@ -210,13 +231,87 @@ function cargarAgencias(){
     requestAgencias.send()
 
 }
-function calificar(agency) {
+function addFavorite(agency) {
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-    xmlhttp.open("POST", "/sites/file");
+    xmlhttp.open("POST", "/sites/add_favorite");
     xmlhttp.setRequestHeader("Content-Type", "application/json");
     xmlhttp.send(JSON.stringify(agency));
 
-    alert(JSON.stringify(agency))
+    xmlhttp.onload = function () {
+        var data = this.response;
+        alert(data);
+    }
+
 }
+function removeFavorite(agency) {
+    var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+    xmlhttp.open("POST", "/sites/remove_favorite");
+    xmlhttp.setRequestHeader("Content-Type", "application/json");
+    xmlhttp.send(JSON.stringify(agency));
+
+    xmlhttp.onload = function () {
+        var data = this.response;
+        alert(data);
+    }
+
+}
+function verFavoritos() {
+    var requestConsultarSites = new XMLHttpRequest();
+    var tbodyFavorites = document.getElementById("tbodyFavorites");
+
+    tbodyFavorites.innerHTML = '';
 
 
+    requestConsultarSites.open("GET","http://localhost:3000/sites/get_favorites", true);
+
+    requestConsultarSites.onload = function () {
+        var data = JSON.parse(this.response);
+        if(data.length != 0){
+            data.forEach(function (agency, index) {
+
+                var hilera = document.createElement("tr");
+
+                var celdaId = document.createElement("td");
+                var txtceldaid = document.createTextNode(index);
+
+                var address = document.createElement("td");
+                var agency_code = document.createElement("td");
+                var description = document.createElement("td");
+                var distance = document.createElement("td");
+
+
+                var txtaddress = document.createTextNode(agency.address.address_line);
+                var txtagency_code = document.createTextNode(agency.agency_code);
+                var txtdescription = document.createTextNode(agency.description);
+                var txtdistance = document.createTextNode(agency.distance);
+
+                celdaId.appendChild(txtceldaid);
+                address.appendChild(txtaddress);
+                agency_code.appendChild(txtagency_code);
+                description.appendChild(txtdescription);
+                distance.appendChild(txtdistance);
+
+                hilera.appendChild(celdaId);
+                hilera.appendChild(address);
+                hilera.appendChild(agency_code);
+                hilera.appendChild(description);
+                hilera.appendChild(distance);
+
+                tbodyFavorites.appendChild(hilera);
+                document.getElementById('id01').style.display='block'
+
+
+
+            })
+
+
+        } else{
+            alert("No hay agencias favoritas cargadas")
+        }
+
+
+    };
+
+    requestConsultarSites.send()
+
+}

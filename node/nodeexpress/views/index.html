@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
 
     <meta charset="UTF-8">
     <title>Buscador de agencias</title>
@@ -45,6 +48,8 @@
 
     </form>
     <div class="pull-right">
+        <button type="" class="btn btn-warning pull-right button" onclick="verFavoritos()">+ Ver favoritos</button>
+
         <button type="" class="btn btn-primary pull-right" onclick="cargarAgencias()">Cargar</button>
 
 
@@ -66,6 +71,33 @@
             <tbody id="tbody">
             </tbody>
         </table>
+    </div>
+</div>
+<div class="w3-container">
+    <div id="id01" class="w3-modal">
+        <div class="w3-modal-content">
+            <div class="w3-container">
+                <span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+                <h2 class="title">Agencias Favoritas</h2>
+
+                <div class="table margin-top">
+                    <br>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Direccion</th>
+                            <th scope="col">Codigo agencia</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Longitud</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbodyFavorites">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
