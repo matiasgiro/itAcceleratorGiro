@@ -1,3 +1,29 @@
+var sitePC, paymentPC,latitudPC, longitudPC,radioPC;
+
+function primeraConsulta(site,payment, latitud, longitud, radio) {
+    if(sitePC != site){
+        sitePC = site;
+        return true
+    }
+    if(paymentPC != payment){
+        paymentPC = payment;
+        return true
+    }
+    if(latitudPC != latitud){
+        latitudPC = latitud;
+        return true
+    }
+    if(longitudPC != longitud){
+        longitudPC = longitud;
+        return true
+    }
+    if(radioPC != radio){
+        radioPC = radio;
+        return true
+    }
+    return false;
+
+}
 
 function cargarSites(){
 
@@ -83,7 +109,7 @@ function cargarPaymentMethods(psite){
     requestPaymentMethods.send()
 
 }
-function cargarAgencias(){
+function cargarAgencias(limit){
 
     var site = document.getElementById("sitesSelect").value;
 
@@ -111,15 +137,14 @@ function cargarAgencias(){
         alert("Debe ingresar un radio");
         return
     }
-
     var tbody = document.getElementById("tbody");
     tbody.innerHTML = '';
     var filtro = document.getElementById("filtro").value;
 
 
-
     var requestAgencias = new XMLHttpRequest();
-    var url = "http://localhost:3000/sites/search?site="+site+"&agency="+ agency + "&latitud=" + latitud + "&longitud=" + longitud+"," + radio;
+    var url = "http://localhost:3000/sites/search?site="+site+"&agency="+ agency + "&latitud=" + latitud + "&longitud=" + longitud+","
+        + radio + "&limit="+ (limit) *5;
 
     requestAgencias.open("GET",url, true);
 
@@ -160,13 +185,19 @@ function cargarAgencias(){
         });
 
         if(requestAgencias.status >= 200 && requestAgencias.status < 400){
+            let aux = Math.ceil(data.paging.total / 5);
+            if(primeraConsulta(site,agency,latitud,longitud,radio)){
+                let array = new Array(aux);
+               for (let i =0; i < aux; i++){
+                   array[i]=i;
+               }
+                cargarPaginacion(array);
+
+            }
 
             ordenados.forEach(function (agency, index) {
 
                 var hilera = document.createElement("tr");
-
-                var celdaId = document.createElement("td");
-                var txtceldaid = document.createTextNode(index);
 
                 var address = document.createElement("td");
                 var agency_code = document.createElement("td");
@@ -203,13 +234,11 @@ function cargarAgencias(){
                 var txtdescription = document.createTextNode(agency.description);
                 var txtdistance = document.createTextNode(agency.distance);
 
-                celdaId.appendChild(txtceldaid);
                 address.appendChild(txtaddress);
                 agency_code.appendChild(txtagency_code);
                 description.appendChild(txtdescription);
                 distance.appendChild(txtdistance);
 
-                    hilera.appendChild(celdaId);
                     hilera.appendChild(address);
                     hilera.appendChild(agency_code);
                     hilera.appendChild(description);
@@ -231,6 +260,36 @@ function cargarAgencias(){
     requestAgencias.send()
 
 }
+function cargarPaginacion(array) {
+    var paginacion = document.getElementById("pag");
+    paginacion.innerHTML = ''
+    array.forEach(function (valor, index) {
+        var hilera = document.createElement("li");
+        hilera.onclick = function(e) {
+            cargarAgencias(valor);
+        };
+
+        var celdaId = document.createElement("a");
+        var txtceldaid = document.createTextNode(index + 1);
+        celdaId.appendChild(txtceldaid);
+        hilera.appendChild(celdaId);
+
+
+
+        hilera.className += 'page-item';
+        celdaId.className += 'page-link';
+
+
+        paginacion.appendChild(hilera);
+
+    })
+
+
+
+
+}
+
+
 function addFavorite(agency) {
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
     xmlhttp.open("POST", "/sites/add_favorite");

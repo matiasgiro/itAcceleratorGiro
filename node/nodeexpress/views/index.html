@@ -50,7 +50,7 @@
     <div class="pull-right">
         <button type="" class="btn btn-warning pull-right button" onclick="verFavoritos()">+ Ver favoritos</button>
 
-        <button type="" class="btn btn-primary pull-right" onclick="cargarAgencias()">Cargar</button>
+        <button type="" class="btn btn-primary pull-right" onclick="cargarAgencias(0)">Cargar</button>
 
 
     </div>
@@ -60,7 +60,6 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Direccion</th>
                 <th scope="col">Codigo agencia</th>
                 <th scope="col">Descripcion</th>
@@ -72,6 +71,11 @@
             </tbody>
         </table>
     </div>
+    <nav aria-label="Page navigation example">
+        <ul id="pag" class="pagination justify-content-center">
+
+        </ul>
+    </nav>
 </div>
 <div class="w3-container">
     <div id="id01" class="w3-modal">

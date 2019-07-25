@@ -15,9 +15,10 @@ router.get('/search', function(req, res) {
     var agency = req.query.agency.toString();
     var latitud = req.query.latitud;
     var longitud = req.query.longitud;
+    var offset = req.query.limit;
 
 
-    request.get("https://api.mercadolibre.com/sites/" +site+"/payment_methods/agencies/search?payment_method="+agency+"&near_to="+latitud+","+longitud, function (error, response, body) {
+    request.get("https://api.mercadolibre.com/sites/" +site+"/payment_methods/agencies/search?payment_method="+agency+"&near_to="+latitud+","+longitud +"&limit=5&offset="+offset, function (error, response, body) {
         if(error){
             res.send(error)
         }
